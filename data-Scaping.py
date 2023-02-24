@@ -25,7 +25,7 @@ import pickle
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-eda2b354-1a5b-4f18-a660-19ec570dcd1a"
+API_KEY = "RGAPI-119baa4b-29b2-4945-a01a-05d3ee0a6673"
 # Replace REGION with the region you want to query (e.g. "na1", "euw1", etc.)
 REGION = "eun1"
 # Replace TIER with the tier you want to query (e.g. "GOLD")
@@ -122,6 +122,7 @@ def get_match_ids():
         # GET A PLAYERS IDS MATCH HISTRY USING PUUI...
         #https://developer.riotgames.com/apis#match-v5/GET_getMatchIdsByPUUID
         match_ids = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={number_of_matches}&api_key={API_KEY}"
+        # match_ids = "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?type=ranked&start=0&count={number_of_matches}&api_key={API_KEY}"
         try:
             match_response = requests.get(match_ids)
             if match_response.status_code == 404:
@@ -148,15 +149,126 @@ def get_match_ids():
 
 
 
+def get_game_info():
+    
+    # match_ids = get_match_ids()
+    match_ids = {'xKkamFA9ysY6dCEvcTCSkAeCl2I0LFqLDhMxvSPJS3q-JRXa64rc5UlFJ9mV338APusxaJodwh3UoQ': ['EUN1_3321814596']}
+    
+    
+    
+    
+    for player, match_id in match_ids.items():
+        game_info_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={API_KEY}"
+        try:
+            game_responce = requests.get(game_info_url)
+            if game_responce.status_code == 404:
+                print("match not found.")
+                continue
+            elif game_responce.status_code == 429:
+                print("Rate limit exceeded. Waiting for 2 min...")
+                time.sleep(130)
+                game_responce = requests.get(game_info_url)
+                game_info = game_responce.json()  
+                #play here:
+                participants = game_info['metadata']['participants'] #gives a list of 10 participants[ 0-9]
+                get_participants_info(participants)
+                    
+                    
+                    
+                #-----------   
+            else:
+                game_info = game_responce.json()
+                #play here:
+                get_participants_info(participants)
+                    
+                    
+                    
+                #----------- 
+                time.sleep(5)
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}. Retrying in 5 seconds...")
+            time.sleep(5)
+            continue
+    
+    
+    return 0
 
 
+
+
+
+def get_participants_info(participants):
+    result = {}
+    for participant in participants:
+        time.sleep(5)
+        match_history_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{participant}/ids?start=0&count=2&api_key={API_KEY}"
+        try:
+            match_history_response = requests.get(match_history_url)
+            if match_history_response.status_code != 200:
+                print(f'Error: {match_history_response.text}')
+                continue
+            match_history = match_history_response.json()
+            kills = []
+            deaths = []
+            assists = []
+            doubleKills = []
+            pentakills = []
+            quadrakills = []
+            onMyWayPings = []
+            visionScore = []
+            for match_id in match_history:
+                time.sleep(5)
+                game_info_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={API_KEY}"
+                try:
+                    game_info_response = requests.get(game_info_url)
+                    if game_info_response.status_code != 200:
+                        print(f'Error: {game_info_response.text}')
+                        continue
+                    if game_info_response.status_code == 429:
+                        print("Rate limit exceeded. Waiting for 2 min...")
+                        time.sleep(130)
+                    match = game_info_response.json()
+                    for participant_identity in match['info']['participants']:
+                        if participant_identity['puuid'] == participant:
+                            kills.append(participant_identity['kills'])
+                            deaths.append(participant_identity['deaths'])
+                            assists.append(participant_identity['assists'])
+                            doubleKills.append(participant_identity['doubleKills'])
+                            pentakills.append(participant_identity['pentaKills'])
+                            quadrakills.append(participant_identity['quadraKills'])
+                            onMyWayPings.append(participant_identity['onMyWayPings'])
+                            visionScore.append(participant_identity['visionScore'])
+                except requests.exceptions.RequestException as e:
+                    print(f"Error: {e}. Retrying in 5 seconds...")
+                    time.sleep(5)
+                    continue
+            result[participant] = {'kills': average(kills),'deaths':average(deaths), 'assists':average(assists), 'doubleKills': average(doubleKills), 'pentakills': average(pentakills),
+                                            'quadrakills': average(quadrakills), 'onMyWayPings':average(onMyWayPings), 'visionScore':average(visionScore)}
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}. Retrying in 5 seconds...")
+            time.sleep(5)
+            continue
+    return result
+
+
+
+def average(numbers):
+    if len(numbers) == 0:
+        return 0
+    return sum(numbers) / len(numbers)
+
+    
+
+                   
+# game_info['info']['participants'][9]
+
+          
                 
-                
-                
-                
-                
-                
-                
+       
+# # Game_info = f"https://europe.api.riotgames.com/lol/match/v5/matches/{matches_ids[0]}?api_key={API_KEY}"
+# # #https://developer.riotgames.com/apis#match-v5/GET_getMatch
+# game_responce = requests.get(Game_info)
+# game_info = game_responce.json()         
                 
                 
                 
