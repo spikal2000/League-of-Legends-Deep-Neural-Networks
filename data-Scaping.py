@@ -92,6 +92,7 @@ def get_puuids():
                     player_puuid = player_puuid_response.json()
                     puuid = player_puuid['puuid']
                     puuids.append(puuid)
+                    time.sleep(5)
             except requests.exceptions.RequestException as e:
                 print(f"Error: {e}. Retrying in 5 seconds...")
                 time.sleep(5)
@@ -100,14 +101,54 @@ def get_puuids():
     return puuids
             
             
-# puuids = get_puuids()
-# with open('puuids.pickle', 'wb') as f:
-#     pickle.dump(puuids, f)
 
-with open('puuids.pickle', 'rb') as f:
-    puuids = pickle.load(f)
+
+
+    
+
+
+def get_match_ids():
+    # puuids = get_puuids()
+    # with open('puuids.pickle', 'wb') as f:
+    #     pickle.dump(puuids, f)
+    # with open('puuids.pickle', 'rb') as f:
+    #     puuids = pickle.load(f)
+    
+    puuids = ["xKkamFA9ysY6dCEvcTCSkAeCl2I0LFqLDhMxvSPJS3q-JRXa64rc5UlFJ9mV338APusxaJodwh3UoQ", "Iuk2x32ujlq_Bpr_JTEHm7gIDd_TlwYNh4XLZyWdP3PTn-L4heP8u0EUmqVQyB54Efcaym8zAnSIew"]
+    
+    number_of_matches = 1
+    player_matchId = {}
+    for puuid in puuids:
+        # GET A PLAYERS IDS MATCH HISTRY USING PUUI...
+        #https://developer.riotgames.com/apis#match-v5/GET_getMatchIdsByPUUID
+        match_ids = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={number_of_matches}&api_key={API_KEY}"
+        try:
+            match_response = requests.get(match_ids)
+            if match_response.status_code == 404:
+                print("match not found.")
+                continue
+            elif match_response.status_code == 429:
+                print("Rate limit exceeded. Waiting for 2 min...")
+                time.sleep(130)
+                match_response = requests.get(match_ids)
+                matches_ids = match_response.json()
+                player_matchId[puuid] = matches_ids
+            else:
+                matches_ids = match_response.json()
+                player_matchId[puuid] = matches_ids
+                time.sleep(5)
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}. Retrying in 5 seconds...")
+            time.sleep(5)
+            continue
     
     
+    return player_matchId
+
+
+
+
+
 
                 
                 
