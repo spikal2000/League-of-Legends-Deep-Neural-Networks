@@ -9,6 +9,7 @@ import random
 from riotwatcher import LolWatcher, ApiError
 import time
 import pickle
+import pandas as pd
     
 # watcher = LolWatcher('RGAPI-af2143e1-3872-472e-8e1b-859f6011d83c')
 
@@ -25,7 +26,7 @@ import pickle
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-119baa4b-29b2-4945-a01a-05d3ee0a6673"
+API_KEY = "RGAPI-45d02845-0f68-40f5-b85f-5a97ca39bbe2"
 # Replace REGION with the region you want to query (e.g. "na1", "euw1", etc.)
 REGION = "eun1"
 # Replace TIER with the tier you want to query (e.g. "GOLD")
@@ -147,7 +148,18 @@ def get_match_ids():
     return player_matchId
 
 
+# Define the columns for the DataFrame
+columns = ['match_id',
+           'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
+           'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
+           'average_deaths-red_Player1', 'average_deaths-red_Player2', 'average_deaths-red_Player3', 'average_deaths-red_Player4', 'average_deaths-red_Player5',
+           'average_deaths-Blue_player1', 'average_deaths-Blue_player2', 'average_deaths-Blue_player3', 'average_deaths-Blue_player4', 'average_deaths-Blue_player5',
+           'average_assists-red_Player1', 'average_assists-red_Player2', 'average_assists-red_Player3', 'average_assists-red_Player4', 'average_assists-red_Player5',
+           'average_assists-Blue_player1', 'average_assists-Blue_player2', 'average_assists-Blue_player3', 'average_assists-Blue_player4', 'average_assists-Blue_player5',
+           'win']
 
+# Define an empty DataFrame with the columns
+df = pd.DataFrame(columns=columns)
 
 def get_game_info():
     
@@ -157,40 +169,70 @@ def get_game_info():
     
     
     
-    for player, match_id in match_ids.items():
-        game_info_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={API_KEY}"
-        try:
-            game_responce = requests.get(game_info_url)
-            if game_responce.status_code == 404:
-                print("match not found.")
-                continue
-            elif game_responce.status_code == 429:
-                print("Rate limit exceeded. Waiting for 2 min...")
-                time.sleep(130)
+    for player in match_ids:
+        win = 0
+        blueTeam = []
+        redTeam = []
+        for match_id in match_ids[player]:
+            game_info_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={API_KEY}"
+            try:
+                game_responce = requests.get(game_info_url)
+                if game_responce.status_code == 404:
+                    print("match not found.")
+                    continue
+                if game_responce.status_code == 429:
+                    print("Rate limit exceeded. Waiting for 2 min...")
+                    time.sleep(130)
+                time.sleep(3)
                 game_responce = requests.get(game_info_url)
                 game_info = game_responce.json()  
                 #play here:
                 participants = game_info['metadata']['participants'] #gives a list of 10 participants[ 0-9]
-                get_participants_info(participants)
+                
+                for participant in participants:
+                    if participant['teamId'] == 100:
+                        blueTeam.append(participant['puuid'])
+                    elif participant['teamId'] == 200:
+                        redTeam.append(participant['puuid'])
+                        
+                pinfo = get_participants_info(participants)
+                for part in range(0,10):
+                    if player == game_info['info']['participants'][part]['puuid']:
+                        if game_info['info']['participants'][part]['win'] == True:
+                            win = 1
+                
+              
+                row = [match_id] + [pinfo[player]['kills'] for player in redTeam] + [pinfo[player]['kills'] for player in blueTeam] + [pinfo[player]['deaths'] for player in redTeam] + [pinfo[player]['deaths'] for player in blueTeam] + [pinfo[player]['assists'] for player in redTeam] + [pinfo[player]['assists'] for player in blueTeam] + [win]                       
+                        
+                       
+                        
+                       # row = [match_id,participants[0], participants[1], participants[2], participants[3], participants[4],
+                       #          participants[5], participants[6], participants[7], participants[8], participants[9],
+                       #          pinfo[participants[0]]['kills'], pinfo[participants[1]]['kills'], pinfo[participants[2]]['kills'], pinfo[participants[3]]['kills'], pinfo[participants[4]]['kills'],
+                       #          pinfo[participants[5]]['kills'], pinfo[participants[6]]['kills'], pinfo[participants[7]]['kills'], pinfo[participants[8]]['kills'], pinfo[participants[9]]['kills'],
+                       #          pinfo[participants[0]]['deaths'], pinfo[participants[1]]['deaths'], pinfo[participants[2]]['deaths'], pinfo[participants[3]]['deaths'], pinfo[participants[4]]['deaths'],
+                       #          pinfo[participants[5]]['deaths'], pinfo[participants[6]]['deaths'], pinfo[participants[7]]['deaths'], pinfo[participants[8]]['deaths'], pinfo[participants[9]]['deaths'],
+                       #          pinfo[participants[0]]['assists'], pinfo[participants[1]]['assists'], pinfo[participants[2]]['assists'], pinfo[participants[3]]['assists'], pinfo[participants[4]]['assists'],
+                       #          pinfo[participants[5]]['assists'], pinfo[participants[6]]['assists'], pinfo[participants[7]]['assists'], pinfo[participants[8]]['assists'], pinfo[participants[9]]['assists'],
+                       #          win]
+
+                df.loc[len(df)] = row
                     
+                        
+                        
+                        
+                    #-----------   
                     
-                    
-                #-----------   
-            else:
-                game_info = game_responce.json()
-                #play here:
-                get_participants_info(participants)
-                    
-                    
-                    
-                #----------- 
+                        
+                        
+                        
+                    #----------- 
+                time.sleep(3)
+            except requests.exceptions.RequestException as e:
+                print(f"Error: {e}. Retrying in 5 seconds...")
                 time.sleep(5)
-        except requests.exceptions.RequestException as e:
-            print(f"Error: {e}. Retrying in 5 seconds...")
-            time.sleep(5)
-            continue
-    
-    
+                continue
+        
     return 0
 
 
@@ -199,9 +241,11 @@ def get_game_info():
 
 def get_participants_info(participants):
     result = {}
+   
     for participant in participants:
-        time.sleep(5)
+        time.sleep(3)
         match_history_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{participant}/ids?start=0&count=2&api_key={API_KEY}"
+        
         try:
             match_history_response = requests.get(match_history_url)
             if match_history_response.status_code != 200:
@@ -211,9 +255,6 @@ def get_participants_info(participants):
             kills = []
             deaths = []
             assists = []
-            doubleKills = []
-            pentakills = []
-            quadrakills = []
             onMyWayPings = []
             visionScore = []
             for match_id in match_history:
@@ -233,17 +274,15 @@ def get_participants_info(participants):
                             kills.append(participant_identity['kills'])
                             deaths.append(participant_identity['deaths'])
                             assists.append(participant_identity['assists'])
-                            doubleKills.append(participant_identity['doubleKills'])
-                            pentakills.append(participant_identity['pentaKills'])
-                            quadrakills.append(participant_identity['quadraKills'])
                             onMyWayPings.append(participant_identity['onMyWayPings'])
                             visionScore.append(participant_identity['visionScore'])
+                        
+                                
                 except requests.exceptions.RequestException as e:
                     print(f"Error: {e}. Retrying in 5 seconds...")
                     time.sleep(5)
                     continue
-            result[participant] = {'kills': average(kills),'deaths':average(deaths), 'assists':average(assists), 'doubleKills': average(doubleKills), 'pentakills': average(pentakills),
-                                            'quadrakills': average(quadrakills), 'onMyWayPings':average(onMyWayPings), 'visionScore':average(visionScore)}
+            result[participant] = {'kills': average(kills),'deaths':average(deaths), 'assists':average(assists), 'onMyWayPings':average(onMyWayPings), 'visionScore':average(visionScore)}
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}. Retrying in 5 seconds...")
             time.sleep(5)
