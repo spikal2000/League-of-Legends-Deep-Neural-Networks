@@ -8,6 +8,7 @@ import requests
 import random
 from riotwatcher import LolWatcher, ApiError
 import time
+import pickle
     
 # watcher = LolWatcher('RGAPI-af2143e1-3872-472e-8e1b-859f6011d83c')
 
@@ -30,20 +31,21 @@ REGION = "eun1"
 # Replace TIER with the tier you want to query (e.g. "GOLD")
 TIER = "GOLD"
 
-pages = ['1', '2', '3']
+PAGES = [1]
 
 # Step 1: Get a list of all leagues in the region
 #leagues_url = f"https://{REGION}.api.riotgames.com/lol/league/v4/leagues?api_key={API_KEY}"
-random_players_url = f"https://eun1.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/{TIER}/I?page={pages[0]}&api_key={API_KEY}"
+# random_players_url = f"https://eun1.api.riotgames.com/lol/league/v4/entries/RANKED_SOLO_5x5/{TIER}/I?page={pages[0]}&api_key={API_KEY}"
 
 
 
 #Gets random players from all the ranks and returns a list 
+#NOte: we dont have to use this, get_puuids() is ussing this for us
 def get_players():
     # TIERS = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
     # RANKS = ["I", "II", "III", "IV"]
     # REGIONS = ["eun1", "na1", "eu1"]
-    PAGES = [1]
+    # PAGES = [1]
     TIERS = ["GOLD"]
     RANKS = ["I"]
     REGIONS = ["eun1"]
@@ -65,14 +67,48 @@ def get_players():
                         continue
                 
     return result
-                
-                
-                
 
-                
-                
-                
-                
+
+def get_puuids():
+    players = get_players()
+    
+    puuids = []
+    for page in range(0, len(PAGES)):
+        for player in players[page]:
+            player_puuid_url = f"https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player['summonerName']}?api_key={API_KEY}"
+            try:
+                player_puuid_response = requests.get(player_puuid_url)
+                if player_puuid_response.status_code == 404:
+                    print("Player not found.")
+                    continue
+                elif player_puuid_response.status_code == 429:
+                    print("Rate limit exceeded. Waiting for 2 min...")
+                    time.sleep(130)
+                    player_puuid_response = requests.get(player_puuid_url)
+                    player_puuid = player_puuid_response.json()
+                    puuid = player_puuid['puuid']
+                    puuids.append(puuid)
+                else:
+                    player_puuid = player_puuid_response.json()
+                    puuid = player_puuid['puuid']
+                    puuids.append(puuid)
+            except requests.exceptions.RequestException as e:
+                print(f"Error: {e}. Retrying in 5 seconds...")
+                time.sleep(5)
+                continue
+            
+    return puuids
+            
+            
+# puuids = get_puuids()
+# with open('puuids.pickle', 'wb') as f:
+#     pickle.dump(puuids, f)
+
+with open('puuids.pickle', 'rb') as f:
+    puuids = pickle.load(f)
+    
+    
+
                 
                 
                 
