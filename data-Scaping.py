@@ -23,10 +23,8 @@ import pandas as pd
 
 
 
-
-
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-45d02845-0f68-40f5-b85f-5a97ca39bbe2"
+API_KEY = "RGAPI-811ced25-f787-4dd3-af75-087bf0129612"
 # Replace REGION with the region you want to query (e.g. "na1", "euw1", etc.)
 REGION = "eun1"
 # Replace TIER with the tier you want to query (e.g. "GOLD")
@@ -43,14 +41,14 @@ PAGES = [1]
 #Gets random players from all the ranks and returns a list 
 #NOte: we dont have to use this, get_puuids() is ussing this for us
 def get_players():
-    # TIERS = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
-    # RANKS = ["I", "II", "III", "IV"]
-    # REGIONS = ["eun1", "na1", "eu1"]
-    # PAGES = [1]
-    TIERS = ["GOLD"]
-    RANKS = ["I"]
-    REGIONS = ["eun1"]
+    TIERS = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
+    RANKS = ["I", "II", "III", "IV"]
+    REGIONS = ["eun1", "na1"]
     PAGES = [1]
+    #TIERS = ["GOLD"]
+    #RANKS = ["I"]
+    #REGIONS = ["eun1"]
+    #PAGES = [1]
     result = []
     
     for PAGE in PAGES:
@@ -109,13 +107,13 @@ def get_puuids():
 
 
 def get_match_ids():
-    # puuids = get_puuids()
+    puuids = get_puuids()
     # with open('puuids.pickle', 'wb') as f:
     #     pickle.dump(puuids, f)
     # with open('puuids.pickle', 'rb') as f:
     #     puuids = pickle.load(f)
     
-    puuids = ["xKkamFA9ysY6dCEvcTCSkAeCl2I0LFqLDhMxvSPJS3q-JRXa64rc5UlFJ9mV338APusxaJodwh3UoQ", "Iuk2x32ujlq_Bpr_JTEHm7gIDd_TlwYNh4XLZyWdP3PTn-L4heP8u0EUmqVQyB54Efcaym8zAnSIew"]
+    #puuids = ["xKkamFA9ysY6dCEvcTCSkAeCl2I0LFqLDhMxvSPJS3q-JRXa64rc5UlFJ9mV338APusxaJodwh3UoQ", "Iuk2x32ujlq_Bpr_JTEHm7gIDd_TlwYNh4XLZyWdP3PTn-L4heP8u0EUmqVQyB54Efcaym8zAnSIew"]
     
     number_of_matches = 1
     player_matchId = {}
@@ -150,21 +148,19 @@ def get_match_ids():
 
 # Define the columns for the DataFrame
 columns = ['match_id',
+           'red_Player1', 'red_Player2', 'red_Player3', 'red_Player4', 'red_Player5',
+           'Blue_player1', 'Blue_player2', 'Blue_player3', 'Blue_player4', 'Blue_player5',
            'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
            'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
-           'average_deaths-red_Player1', 'average_deaths-red_Player2', 'average_deaths-red_Player3', 'average_deaths-red_Player4', 'average_deaths-red_Player5',
-           'average_deaths-Blue_player1', 'average_deaths-Blue_player2', 'average_deaths-Blue_player3', 'average_deaths-Blue_player4', 'average_deaths-Blue_player5',
-           'average_assists-red_Player1', 'average_assists-red_Player2', 'average_assists-red_Player3', 'average_assists-red_Player4', 'average_assists-red_Player5',
-           'average_assists-Blue_player1', 'average_assists-Blue_player2', 'average_assists-Blue_player3', 'average_assists-Blue_player4', 'average_assists-Blue_player5',
-           'win']
+           'blueTeam_win']
 
 # Define an empty DataFrame with the columns
 df = pd.DataFrame(columns=columns)
 
 def get_game_info():
     
-    # match_ids = get_match_ids()
-    match_ids = {'xKkamFA9ysY6dCEvcTCSkAeCl2I0LFqLDhMxvSPJS3q-JRXa64rc5UlFJ9mV338APusxaJodwh3UoQ': ['EUN1_3321814596']}
+    match_ids = get_match_ids()
+    #match_ids = {'xKkamFA9ysY6dCEvcTCSkAeCl2I0LFqLDhMxvSPJS3q-JRXa64rc5UlFJ9mV338APusxaJodwh3UoQ': ['EUN1_3321814596']}
     
     
     
@@ -188,12 +184,15 @@ def get_game_info():
                 game_info = game_responce.json()  
                 #play here:
                 participants = game_info['metadata']['participants'] #gives a list of 10 participants[ 0-9]
-                
+                pinfo = get_participants_info(participants)
+
                 for participant in participants:
-                    if participant['teamId'] == 100:
-                        blueTeam.append(participant['puuid'])
-                    elif participant['teamId'] == 200:
-                        redTeam.append(participant['puuid'])
+                    for i in range(0,10):
+                        if participant == game_info['info']['participants'][i]['puuid']:
+                            if game_info['info']['participants'][i]['teamId'] == 100:
+                                blueTeam.append(participant)
+                            elif game_info['info']['participants'][i]['teamId'] == 200:
+                                redTeam.append(participant)
                         
                 pinfo = get_participants_info(participants)
                 for part in range(0,10):
@@ -201,21 +200,11 @@ def get_game_info():
                         if game_info['info']['participants'][part]['win'] == True:
                             win = 1
                 
+                
               
-                row = [match_id] + [pinfo[player]['kills'] for player in redTeam] + [pinfo[player]['kills'] for player in blueTeam] + [pinfo[player]['deaths'] for player in redTeam] + [pinfo[player]['deaths'] for player in blueTeam] + [pinfo[player]['assists'] for player in redTeam] + [pinfo[player]['assists'] for player in blueTeam] + [win]                       
-                        
-                       
-                        
-                       # row = [match_id,participants[0], participants[1], participants[2], participants[3], participants[4],
-                       #          participants[5], participants[6], participants[7], participants[8], participants[9],
-                       #          pinfo[participants[0]]['kills'], pinfo[participants[1]]['kills'], pinfo[participants[2]]['kills'], pinfo[participants[3]]['kills'], pinfo[participants[4]]['kills'],
-                       #          pinfo[participants[5]]['kills'], pinfo[participants[6]]['kills'], pinfo[participants[7]]['kills'], pinfo[participants[8]]['kills'], pinfo[participants[9]]['kills'],
-                       #          pinfo[participants[0]]['deaths'], pinfo[participants[1]]['deaths'], pinfo[participants[2]]['deaths'], pinfo[participants[3]]['deaths'], pinfo[participants[4]]['deaths'],
-                       #          pinfo[participants[5]]['deaths'], pinfo[participants[6]]['deaths'], pinfo[participants[7]]['deaths'], pinfo[participants[8]]['deaths'], pinfo[participants[9]]['deaths'],
-                       #          pinfo[participants[0]]['assists'], pinfo[participants[1]]['assists'], pinfo[participants[2]]['assists'], pinfo[participants[3]]['assists'], pinfo[participants[4]]['assists'],
-                       #          pinfo[participants[5]]['assists'], pinfo[participants[6]]['assists'], pinfo[participants[7]]['assists'], pinfo[participants[8]]['assists'], pinfo[participants[9]]['assists'],
-                       #          win]
-
+                row = [match_id] + [player for player in redTeam]+ [player for player in blueTeam] + [pinfo[player]['kills'] for player in redTeam] + [pinfo[player]['kills'] for player in blueTeam]  + [win]                       
+                #row = [match_id] + [pinfo[player]['kills'] for player in redTeam] + [pinfo[player]['kills'] for player in blueTeam] + [pinfo[player]['deaths'] for player in redTeam] + [pinfo[player]['deaths'] for player in blueTeam] + [pinfo[player]['assists'] for player in redTeam] + [pinfo[player]['assists'] for player in blueTeam] + [win]                       
+                #apply to df 
                 df.loc[len(df)] = row
                     
                         
@@ -239,9 +228,17 @@ def get_game_info():
 
 
 
+
+
+
+
+
+
+
+
 def get_participants_info(participants):
     result = {}
-   
+
     for participant in participants:
         time.sleep(3)
         match_history_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{participant}/ids?start=0&count=2&api_key={API_KEY}"
@@ -253,10 +250,10 @@ def get_participants_info(participants):
                 continue
             match_history = match_history_response.json()
             kills = []
-            deaths = []
-            assists = []
-            onMyWayPings = []
-            visionScore = []
+            #deaths = []
+            #assists = []
+            #onMyWayPings = []
+            #visionScore = []
             for match_id in match_history:
                 time.sleep(5)
                 game_info_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={API_KEY}"
@@ -272,17 +269,18 @@ def get_participants_info(participants):
                     for participant_identity in match['info']['participants']:
                         if participant_identity['puuid'] == participant:
                             kills.append(participant_identity['kills'])
-                            deaths.append(participant_identity['deaths'])
-                            assists.append(participant_identity['assists'])
-                            onMyWayPings.append(participant_identity['onMyWayPings'])
-                            visionScore.append(participant_identity['visionScore'])
+                            #deaths.append(participant_identity['deaths'])
+                            #assists.append(participant_identity['assists'])
+                            #onMyWayPings.append(participant_identity['onMyWayPings'])
+                            #visionScore.append(participant_identity['visionScore'])
                         
                                 
                 except requests.exceptions.RequestException as e:
                     print(f"Error: {e}. Retrying in 5 seconds...")
                     time.sleep(5)
                     continue
-            result[participant] = {'kills': average(kills),'deaths':average(deaths), 'assists':average(assists), 'onMyWayPings':average(onMyWayPings), 'visionScore':average(visionScore)}
+            result[participant] = {'kills': average(kills)}
+            #result[participant] = {'kills': average(kills),'deaths':average(deaths), 'assists':average(assists), 'onMyWayPings':average(onMyWayPings), 'visionScore':average(visionScore)}
         except requests.exceptions.RequestException as e:
             print(f"Error: {e}. Retrying in 5 seconds...")
             time.sleep(5)
@@ -309,21 +307,4 @@ def average(numbers):
 # game_responce = requests.get(Game_info)
 # game_info = game_responce.json()         
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+  
