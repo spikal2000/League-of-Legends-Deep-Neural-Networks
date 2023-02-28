@@ -170,6 +170,9 @@ def get_game_info():
         blueTeam = []
         redTeam = []
         for match_id in match_ids[player]:
+            win = 0
+            blueTeam = []
+            redTeam = []
             game_info_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={API_KEY}"
             try:
                 game_responce = requests.get(game_info_url)
@@ -191,7 +194,7 @@ def get_game_info():
                         if participant == game_info['info']['participants'][i]['puuid']:
                             if game_info['info']['participants'][i]['teamId'] == 100:
                                 blueTeam.append(participant)
-                            elif game_info['info']['participants'][i]['teamId'] == 200:
+                            if game_info['info']['participants'][i]['teamId'] == 200:
                                 redTeam.append(participant)
                         
                 pinfo = get_participants_info(participants)
