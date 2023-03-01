@@ -195,9 +195,20 @@ def get_participants_info(participants):
             match_history = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=participant, queue=420)
             kills = []
             deaths = []
-            #assists = []
-            #onMyWayPings = []
-            #visionScore = []
+            assists = []
+            visionScore = []
+            wardsKilled = []
+            goldPerMinute = []
+            landSkillShotsEarlyGame = []
+            skillshotsHit = []
+            skillshotsDodged = []
+            turretTakedowns = []
+            goldEarned = []
+            onMyWayPings = []
+            damagePerMinute = []
+            dodgeSkillShotsSmallWindow = []
+            laneMinionsFirst10Minutes = []
+            dancedWithRiftHerald = []
             for match_id in match_history[:10]:
                 time.sleep(2)
                 try:
@@ -206,13 +217,39 @@ def get_participants_info(participants):
                         if participant_identity['puuid'] == participant:
                             kills.append(participant_identity['kills'])
                             deaths.append(participant_identity['deaths'])
-                            #assists.append(participant_identity['assists'])
-                            #onMyWayPings.append(participant_identity['onMyWayPings'])
-                            #visionScore.append(participant_identity['visionScore'])
+                            assists.append(participant_identity['assists'])
+                            visionScore.append(participant_identity['visionScore'])
+                            wardsKilled.append(participant_identity['wardsKilled'])
+                            goldPerMinute.append(participant_identity['goldPerMinute'])
+                            landSkillShotsEarlyGame.append(participant_identity['landSkillShotsEarlyGame'])
+                            skillshotsHit.append(participant_identity['skillshotsHit'])
+                            skillshotsDodged.append(participant_identity['skillshotsDodged'])
+                            turretTakedowns.append(participant_identity['turretTakedowns'])
+                            goldEarned.append(participant_identity['goldEarned'])
+                            onMyWayPings.append(participant_identity['onMyWayPings'])
+                            damagePerMinute.append(participant_identity['damagePerMinute'])
+                            dodgeSkillShotsSmallWindow.append(participant_identity['dodgeSkillShotsSmallWindow'])
+                            laneMinionsFirst10Minutes.append(participant_identity['laneMinionsFirst10Minutes'])
+                            dancedWithRiftHerald.append(participant_identity['dancedWithRiftHerald'])
                 except ApiError as err:
                     print(f"API error: {err}")
                     continue
-            result[i] = {'kills': average(kills), 'deaths': average(deaths)}
+            result[i] = {'kills': average(kills), 
+                         'deaths': average(deaths), 
+                         'assists': average(assists),
+                         'visionScore': average(visionScore),
+                         'wardsKilled': average(wardsKilled),
+                         'goldPerMinute': average(goldPerMinute),
+                         'landSkillShotsEarlyGame': average(landSkillShotsEarlyGame),
+                         'skillshotsHit':average(skillshotsHit),
+                         'skillshotsDodged':average(skillshotsDodged),
+                         'turretTakedowns':average(turretTakedowns),
+                         'goldEarned':average(goldEarned),
+                         'onMyWayPings':average(onMyWayPings),
+                         'damagePerMinute':average(damagePerMinute),
+                         'dodgeSkillShotsSmallWindow':average(dodgeSkillShotsSmallWindow),
+                         'laneMinionsFirst10Minutes':average(laneMinionsFirst10Minutes),
+                         'dancedWithRiftHerald':average(dancedWithRiftHerald)}
             i+=1
         except ApiError as err:
             # Handle any errors that occur
