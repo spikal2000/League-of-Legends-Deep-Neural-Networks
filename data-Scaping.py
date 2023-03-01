@@ -10,6 +10,7 @@ from riotwatcher import LolWatcher, ApiError
 import time
 import pickle
 import pandas as pd
+import concurrent.futures
     
 # watcher = LolWatcher('RGAPI-af2143e1-3872-472e-8e1b-859f6011d83c')
 
@@ -128,8 +129,8 @@ def get_match_ids():
 columns = ['match_id',
            'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
            'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
-           'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
-           'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
+           'average_deaths-red_Player1', 'average_deaths-red_Player2', 'average_deaths-red_Player3', 'average_deaths-red_Player4', 'average_deaths-red_Player5',
+           'average_deaths-Blue_player1', 'average_deaths-Blue_player2', 'average_deaths-Blue_player3', 'average_deaths-Blue_player4', 'average_deaths-Blue_player5',
            'blueTeam_win']
 
 # Define an empty DataFrame with the columns
@@ -153,8 +154,14 @@ def run():
                         if match_details['info']['participants'][i]['teamId'] == 200:
                             redTeam.append(participant)
             #start here
-            bInfo = get_participants_info(blueTeam)
-            rInfo = get_participants_info(redTeam)
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                bInfo_future = executor.submit(get_participants_info, blueTeam)
+                rInfo_future = executor.submit(get_participants_info, redTeam)
+            
+            bInfo = bInfo_future.result()
+            rInfo = rInfo_future.result()
+            # bInfo = get_participants_info(blueTeam)
+            # rInfo = get_participants_info(redTeam)
             #teamID = 100 == blueteam
             if match_details['info']['teams'][0]['win']:
                 win = 1
@@ -163,7 +170,9 @@ def run():
             rd = []
             for i in range(0,5):
                 bl.append(bInfo[i]['kills'])
+                bl.append(bInfo[i]['deaths'])
                 rd.append(rInfo[i]['kills'])
+                rd.append(rInfo[i]['deaths'])
             row = [match] + rd + bl + [win]
             df.loc[len(df)] = row
             print(row)
@@ -203,7 +212,7 @@ def get_participants_info(participants):
                 except ApiError as err:
                     print(f"API error: {err}")
                     continue
-            result[i] = {'kills': average(kills)}
+            result[i] = {'kills': average(kills), 'deaths': average(deaths)}
             i+=1
         except ApiError as err:
             # Handle any errors that occur
