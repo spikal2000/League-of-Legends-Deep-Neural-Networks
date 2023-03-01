@@ -123,23 +123,7 @@ def get_match_ids():
     matches  = [val for sublist in matches for val in sublist]
     
     return matches
-'kills': average(kills), 
-             'deaths': average(deaths), 
-             'assists': average(assists),
-             'visionScore': average(visionScore),
-             'wardsKilled': average(wardsKilled),
-             'goldPerMinute': average(goldPerMinute),
-             'landSkillShotsEarlyGame': average(landSkillShotsEarlyGame),
-             'skillshotsHit':average(skillshotsHit),
-             'skillshotsDodged':average(skillshotsDodged),
-             'turretTakedowns':average(turretTakedowns),
-             'goldEarned':average(goldEarned),
-             'onMyWayPings':average(onMyWayPings),
-             'damagePerMinute':average(damagePerMinute),
-             'dodgeSkillShotsSmallWindow':average(dodgeSkillShotsSmallWindow),
-             'laneMinionsFirst10Minutes':average(laneMinionsFirst10Minutes),
-             'soloKills':average(soloKills),
-             'dancedWithRiftHerald':average(dancedWithRiftHerald)}
+
 
 # Define the columns for the DataFrame
 columns = ['match_id',
