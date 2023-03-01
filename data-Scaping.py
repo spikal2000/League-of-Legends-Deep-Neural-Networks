@@ -29,7 +29,7 @@ lol_watcher = LolWatcher(API_KEY)
 TIERS = ["GOLD"]
 RANKS = ["I"]
 REGIONS = ["eun1"]
-PAGES = [1, 2]
+PAGES = [1]
 
 
 #Gets random players from all the ranks and returns a list 
@@ -128,6 +128,8 @@ def get_match_ids():
 columns = ['match_id',
            'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
            'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
+           'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
+           'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
            'blueTeam_win']
 
 # Define an empty DataFrame with the columns
@@ -183,18 +185,18 @@ def get_participants_info(participants):
         try:
             match_history = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=participant, queue=420)
             kills = []
-            #deaths = []
+            deaths = []
             #assists = []
             #onMyWayPings = []
             #visionScore = []
-            for match_id in match_history:
+            for match_id in match_history[:10]:
                 time.sleep(2)
                 try:
                     match_details = lol_watcher.match.by_id(region=REGIONS[0],  match_id=match_id)
                     for participant_identity in match_details['info']['participants']:
                         if participant_identity['puuid'] == participant:
                             kills.append(participant_identity['kills'])
-                            #deaths.append(participant_identity['deaths'])
+                            deaths.append(participant_identity['deaths'])
                             #assists.append(participant_identity['assists'])
                             #onMyWayPings.append(participant_identity['onMyWayPings'])
                             #visionScore.append(participant_identity['visionScore'])
