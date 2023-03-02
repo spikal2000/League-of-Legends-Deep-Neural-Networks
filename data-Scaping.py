@@ -25,7 +25,7 @@ import concurrent.futures
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-f7bd360b-0bcc-48ea-8244-a2e81c52ae71"
+API_KEY = "RGAPI-fc04b475-8a87-4fba-80ad-49b8a37d5d59"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["GOLD"]
 RANKS = ["I"]
@@ -216,8 +216,39 @@ def run():
             for i in range(0,5):
                 bl.append(bInfo[i]['kills'])
                 bl.append(bInfo[i]['deaths'])
+                bl.append(bInfo[i]['assists'])
+                bl.append(bInfo[i]['visionScore'])
+                bl.append(rInfo[i]['wablsKilled'])
+                bl.append(rInfo[i]['goldPerMinute'])
+                bl.append(rInfo[i]['landSkillShotsEarlyGame'])
+                bl.append(rInfo[i]['skillshotsHit'])
+                bl.append(rInfo[i]['skillshotsDodged'])
+                bl.append(rInfo[i]['turretTakedowns'])
+                bl.append(rInfo[i]['goldEarned'])
+                bl.append(rInfo[i]['onMyWayPings'])
+                bl.append(rInfo[i]['damagePerMinute'])
+                bl.append(rInfo[i]['dodgeSkillShotsSmallWindow'])
+                bl.append(rInfo[i]['laneMinionsFirst10Minutes'])
+                bl.append(rInfo[i]['soloKills'])
+                bl.append(rInfo[i]['dancedWithRiftHerald'])
+                
                 rd.append(rInfo[i]['kills'])
                 rd.append(rInfo[i]['deaths'])
+                rd.append(rInfo[i]['assists'])
+                rd.append(rInfo[i]['visionScore'])
+                rd.append(rInfo[i]['wardsKilled'])
+                rd.append(rInfo[i]['goldPerMinute'])
+                rd.append(rInfo[i]['landSkillShotsEarlyGame'])
+                rd.append(rInfo[i]['skillshotsHit'])
+                rd.append(rInfo[i]['skillshotsDodged'])
+                rd.append(rInfo[i]['turretTakedowns'])
+                rd.append(rInfo[i]['goldEarned'])
+                rd.append(rInfo[i]['onMyWayPings'])
+                rd.append(rInfo[i]['damagePerMinute'])
+                rd.append(rInfo[i]['dodgeSkillShotsSmallWindow'])
+                rd.append(rInfo[i]['laneMinionsFirst10Minutes'])
+                rd.append(rInfo[i]['soloKills'])
+                rd.append(rInfo[i]['dancedWithRiftHerald'])
             row = [match] + rd + bl + [win]
             df.loc[len(df)] = row
             print(row)
@@ -266,18 +297,18 @@ def get_participants_info(participants):
                             assists.append(participant_identity['assists'])
                             visionScore.append(participant_identity['visionScore'])
                             wardsKilled.append(participant_identity['wardsKilled'])
-                            goldPerMinute.append(participant_identity['goldPerMinute'])
-                            landSkillShotsEarlyGame.append(participant_identity['landSkillShotsEarlyGame'])
-                            skillshotsHit.append(participant_identity['skillshotsHit'])
-                            skillshotsDodged.append(participant_identity['skillshotsDodged'])
-                            turretTakedowns.append(participant_identity['turretTakedowns'])
+                            goldPerMinute.append(participant_identity['challenges']['goldPerMinute'])
+                            landSkillShotsEarlyGame.append(participant_identity['challenges']['landSkillShotsEarlyGame'])
+                            skillshotsHit.append(participant_identity['challenges']['skillshotsHit'])
+                            skillshotsDodged.append(participant_identity['challenges']['skillshotsDodged'])
+                            turretTakedowns.append(participant_identity['challenges']['turretTakedowns'])
                             goldEarned.append(participant_identity['goldEarned'])
                             onMyWayPings.append(participant_identity['onMyWayPings'])
-                            damagePerMinute.append(participant_identity['damagePerMinute'])
-                            dodgeSkillShotsSmallWindow.append(participant_identity['dodgeSkillShotsSmallWindow'])
-                            laneMinionsFirst10Minutes.append(participant_identity['laneMinionsFirst10Minutes'])
-                            soloKills.append(participant_identity['soloKills'])
-                            dancedWithRiftHerald.append(participant_identity['dancedWithRiftHerald'])
+                            damagePerMinute.append(participant_identity['challenges']['damagePerMinute'])
+                            dodgeSkillShotsSmallWindow.append(participant_identity['challenges']['dodgeSkillShotsSmallWindow'])
+                            laneMinionsFirst10Minutes.append(participant_identity['challenges']['laneMinionsFirst10Minutes'])
+                            soloKills.append(participant_identity['challenges']['soloKills'])
+                            dancedWithRiftHerald.append(participant_identity['challenges']['dancedWithRiftHerald'])
                 except ApiError as err:
                     print(f"API error: {err}")
                     continue
