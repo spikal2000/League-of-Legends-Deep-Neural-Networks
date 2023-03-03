@@ -25,7 +25,7 @@ import concurrent.futures
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-fc04b475-8a87-4fba-80ad-49b8a37d5d59"
+API_KEY = "RGAPI-77c4e3b0-2c24-4697-8d57-5b9543ce6a1c"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["GOLD"]
 RANKS = ["I"]
@@ -301,7 +301,9 @@ columns = ['match_id',
 
 # Define an empty DataFrame with the columns
 df = pd.DataFrame(columns=columns)
-match_ids = get_match_ids()
+# match_ids = get_match_ids()
+with open('match_ids.pickle', 'rb') as f:
+    match_ids = pickle.load(f)
 def run():
     
     # match_ids = get_match_ids()
@@ -387,7 +389,7 @@ def get_participants_info(participants):
     for participant in participants:
         time.sleep(2)
         try:
-            match_history = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=participant, queue=420)
+            match_history = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=participant, count=5, queue=420)
             kills = []
             deaths = []
             assists = []
@@ -404,7 +406,7 @@ def get_participants_info(participants):
             laneMinionsFirst10Minutes = []
             soloKills = []
             dancedWithRiftHerald = []
-            for match_id in match_history[:10]:
+            for match_id in match_history:
                 time.sleep(2)
                 try:
                     match_details = lol_watcher.match.by_id(region=REGIONS[0],  match_id=match_id)
@@ -429,6 +431,7 @@ def get_participants_info(participants):
                             dancedWithRiftHerald.append(participant_identity['challenges']['dancedWithRiftHerald'])
                 except ApiError as err:
                     print(f"API error: {err}")
+                    time.sleep(130)
                     continue
             result[i] = {'kills': average(kills), 
                          'deaths': average(deaths), 
