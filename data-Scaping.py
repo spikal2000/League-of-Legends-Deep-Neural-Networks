@@ -125,65 +125,186 @@ def get_match_ids():
     return matches
 
 
-# Define the columns for the DataFrame
+
+
 columns = ['match_id',
-           'average_kills-red_Player1', 'average_kills-red_Player2', 'average_kills-red_Player3', 'average_kills-red_Player4', 'average_kills-red_Player5',
-           'average_kills-Blue_player1', 'average_kills-Blue_player2', 'average_kills-Blue_player3', 'average_kills-Blue_player4', 'average_kills-Blue_player5',
-           'average_deaths-red_Player1', 'average_deaths-red_Player2', 'average_deaths-red_Player3', 'average_deaths-red_Player4', 'average_deaths-red_Player5',
-           'average_deaths-Blue_player1', 'average_deaths-Blue_player2', 'average_deaths-Blue_player3', 'average_deaths-Blue_player4', 'average_deaths-Blue_player5',
+           'average_kills-red_Player1', 
+           'average_deaths-red_Player1', 
+           'average_assists-red_Player1', 
+           'average_visionScore-red_Player1',
+           'average_wardsKilled-red_Player1', 
+           'average_goldPerMinute-red_Player1',
+           'average_landSkillShotsEarlyGame-red_Player1',
+           'average_skillshotsHit-red_Player1',
+           'average_skillshotsDodged-red_Player1', 
+           'average_turretTakedowns-red_Player1',
+           'average_goldEarned-red_Player1',
            
-           'average_assists-red_Player1', 'average_assists-red_Player2', 'average_assists-red_Player3', 'average_assists-red_Player4', 'average_assists-red_Player5',
-           'average_assists-Blue_player1', 'average_assists-Blue_player2', 'average_assists-Blue_player3', 'average_assists-Blue_player4', 'average_assists-Blue_player5',
+           'average_damagePerMinute-red_Player1', 
+           'average_dodgeSkillShotsSmallWindow-red_Player1',
+           'average_laneMinionsFirst10Minutes-red_Player1',
+           'average_soloKills-red_Player1', 
+           'average_danceWithRiftHerald-red_Player1', 
+           'average_kills-red_Player2',
+           'average_deaths-red_Player2', 
+           'average_assists-red_Player2',
+           'average_visionScore-red_Player2', 
+           'average_wardsKilled-red_Player2', 
+           'average_goldPerMinute-red_Player2', 
+           'average_landSkillShotsEarlyGame-red_Player2', 
+           'average_skillshotsHit-red_Player2', 
+           'average_skillshotsDodged-red_Player2',
+           'average_turretTakedowns-red_Player2', 
+           'average_goldEarned-red_Player2', 
+            
+           'average_damagePerMinute-red_Player2',
+           'average_dodgeSkillShotsSmallWindow-red_Player2',
+           'average_laneMinionsFirst10Minutes-red_Player2', 
+           'average_soloKills-red_Player2', 
+           'average_danceWithRiftHerald-red_Player2',
+           'average_kills-red_Player3', 
+           'average_deaths-red_Player3', 
+           'average_assists-red_Player3',
+           'average_visionScore-red_Player3',
+           'average_wardsKilled-red_Player3', 
+           'average_goldPerMinute-red_Player3',
+           'average_landSkillShotsEarlyGame-red_Player3', 
+           'average_skillshotsHit-red_Player3', 
+           'average_skillshotsDodged-red_Player3', 
+           'average_turretTakedowns-red_Player3', 
+           'average_goldEarned-red_Player3', 
            
-           'average_visionScore-red_Player1', 'average_visionScore-red_Player2', 'average_visionScore-red_Player3', 'average_visionScore-red_Player4', 'average_visionScore-red_Player5',
-           'average_visionScore-Blue_player1', 'average_visionScore-Blue_player2', 'average_visionScore-Blue_player3', 'average_visionScore-Blue_player4', 'average_visionScore-Blue_player5',
+           'average_damagePerMinute-red_Player3', 
+           'average_dodgeSkillShotsSmallWindow-red_Player3',
+           'average_laneMinionsFirst10Minutes-red_Player3',
+           'average_soloKills-red_Player3',
+           'average_danceWithRiftHerald-red_Player3', 
+           'average_kills-red_Player4',
+           'average_deaths-red_Player4', 
+           'average_assists-red_Player4', 
+           'average_visionScore-red_Player4', 
+           'average_wardsKilled-red_Player4', 
+           'average_goldPerMinute-red_Player4',
+           'average_landSkillShotsEarlyGame-red_Player4', 
+           'average_skillshotsHit-red_Player4', 
+           'average_skillshotsDodged-red_Player4', 
+           'average_turretTakedowns-red_Player4', 
+           'average_goldEarned-red_Player4',
            
-           'average_wardsKilled-red_Player1', 'average_wardsKilled-red_Player2', 'average_wardsKilled-red_Player3', 'average_wardsKilled-red_Player4', 'average_wardsKilled-red_Player5',
-           'average_wardsKilled-Blue_player1', 'average_wardsKilled-Blue_player2', 'average_wardsKilled-Blue_player3', 'average_wardsKilled-Blue_player4', 'average_wardsKilled-Blue_player5',
+           'average_damagePerMinute-red_Player4', 
+           'average_dodgeSkillShotsSmallWindow-red_Player4', 
+           'average_laneMinionsFirst10Minutes-red_Player4',
+           'average_soloKills-red_Player4', 
+           'average_danceWithRiftHerald-red_Player4', 
+           'average_kills-red_Player5', 
+           'average_deaths-red_Player5', 
+           'average_assists-red_Player5', 
+           'average_visionScore-red_Player5',
+           'average_wardsKilled-red_Player5', 
+           'average_goldPerMinute-red_Player5', 
+           'average_landSkillShotsEarlyGame-red_Player5', 
+           'average_skillshotsHit-red_Player5',
+           'average_skillshotsDodged-red_Player5', 
+           'average_turretTakedowns-red_Player5',
+           'average_goldEarned-red_Player5',
            
-           'average_goldPerMinute-red_Player1', 'average_goldPerMinute-red_Player2', 'average_goldPerMinute-red_Player3', 'average_goldPerMinute-red_Player4', 'average_goldPerMinute-red_Player5',
-           'average_goldPerMinute-Blue_player1', 'average_goldPerMinute-Blue_player2', 'average_goldPerMinute-Blue_player3', 'average_goldPerMinute-Blue_player4', 'average_goldPerMinute-Blue_player5',
+           'average_damagePerMinute-red_Player5',
+           'average_dodgeSkillShotsSmallWindow-red_Player5', 
+           'average_laneMinionsFirst10Minutes-red_Player5',
+           'average_soloKills-red_Player5', 
+           'average_danceWithRiftHerald-red_Player5', 
+           'average_kills-Blue_player1', 
+           'average_deaths-Blue_player1', 
+           'average_assists-Blue_player1', 
+           'average_visionScore-Blue_player1',
+           'average_wardsKilled-Blue_player1', 
+           'average_goldPerMinute-Blue_player1',
+           'average_landSkillShotsEarlyGame-Blue_player1',
+           'average_skillshotsHit-Blue_player1', 
+           'average_skillshotsDodged-Blue_player1', 
+           'average_turretTakedowns-Blue_player1',
+           'average_goldEarned-Blue_player1', 
            
-           'average_landSkillShotsEarlyGame-red_Player1', 'average_landSkillShotsEarlyGame-red_Player2', 'average_landSkillShotsEarlyGame-red_Player3', 'average_landSkillShotsEarlyGame-red_Player4', 'average_landSkillShotsEarlyGame-red_Player5',
-           'average_landSkillShotsEarlyGame-Blue_player1', 'average_landSkillShotsEarlyGame-Blue_player2', 'average_landSkillShotsEarlyGame-Blue_player3', 'average_landSkillShotsEarlyGame-Blue_player4', 'average_landSkillShotsEarlyGame-Blue_player5',
+           'average_damagePerMinute-Blue_player1', 
+           'average_dodgeSkillShotsSmallWindow-Blue_player1', 
+           'average_laneMinionsFirst10Minutes-Blue_player1', 
+           'average_soloKills-Blue_player1', 
+           'average_danceWithRiftHerald-Blue_player1', 
+           'average_kills-Blue_player2', 
+           'average_deaths-Blue_player2', 
+           'average_assists-Blue_player2', 
+           'average_visionScore-Blue_player2',
+           'average_wardsKilled-Blue_player2'
+           , 'average_goldPerMinute-Blue_player2',
+           'average_landSkillShotsEarlyGame-Blue_player2',
+           'average_skillshotsHit-Blue_player2', 
+           'average_skillshotsDodged-Blue_player2',
+           'average_turretTakedowns-Blue_player2',
+           'average_goldEarned-Blue_player2', 
            
-           'average_skillshotsHit-red_Player1', 'average_skillshotsHit-red_Player2', 'average_skillshotsHit-red_Player3', 'average_skillshotsHit-red_Player4', 'average_skillshotsHit-red_Player5',
-           'average_skillshotsHit-Blue_player1', 'average_skillshotsHit-Blue_player2', 'average_skillshotsHit-Blue_player3', 'average_skillshotsHit-Blue_player4', 'average_skillshotsHit-Blue_player5',
-           
-           'average_skillshotsDodged-red_Player1', 'average_skillshotsDodged-red_Player2', 'average_skillshotsDodged-red_Player3', 'average_skillshotsDodged-red_Player4', 'average_skillshotsDodged-red_Player5',
-           'average_skillshotsDodged-Blue_player1', 'average_skillshotsDodged-Blue_player2', 'average_skillshotsDodged-Blue_player3', 'average_skillshotsDodged-Blue_player4', 'average_skillshotsDodged-Blue_player5',
-           
-           'average_turretTakedowns-red_Player1', 'average_turretTakedowns-red_Player2', 'average_turretTakedowns-red_Player3', 'average_turretTakedowns-red_Player4', 'average_turretTakedowns-red_Player5',
-           'average_turretTakedowns-Blue_player1', 'average_turretTakedowns-Blue_player2', 'average_turretTakedowns-Blue_player3', 'average_turretTakedowns-Blue_player4', 'average_turretTakedowns-Blue_player5',
-           
-           'average_goldEarned-red_Player1', 'average_goldEarned-red_Player2', 'average_goldEarned-red_Player3', 'average_goldEarned-red_Player4', 'average_goldEarned-red_Player5',
-           'average_goldEarned-Blue_player1', 'average_goldEarned-Blue_player2', 'average_goldEarned-Blue_player3', 'average_goldEarned-Blue_player4', 'average_goldEarned-Blue_player5',
-           
-           'average_onMyWayPings-red_Player1', 'average_onMyWayPings-red_Player2', 'average_onMyWayPings-red_Player3', 'average_onMyWayPings-red_Player4', 'average_onMyWayPings-red_Player5',
-           'average_onMyWayPings-Blue_player1', 'average_onMyWayPings-Blue_player2', 'average_onMyWayPings-Blue_player3', 'average_onMyWayPings-Blue_player4', 'average_onMyWayPings-Blue_player5',
-           
-           'average_damagePerMinute-red_Player1', 'average_damagePerMinute-red_Player2', 'average_damagePerMinute-red_Player3', 'average_damagePerMinute-red_Player4', 'average_damagePerMinute-red_Player5',
-           'average_damagePerMinute-Blue_player1', 'average_damagePerMinute-Blue_player2', 'average_damagePerMinute-Blue_player3', 'average_damagePerMinute-Blue_player4', 'average_damagePerMinute-Blue_player5',
-           
-           'average_dodgeSkillShotsSmallWindow-red_Player1', 'average_dodgeSkillShotsSmallWindow-red_Player2', 'average_dodgeSkillShotsSmallWindow-red_Player3', 'average_dodgeSkillShotsSmallWindow-red_Player4', 'average_dodgeSkillShotsSmallWindow-red_Player5',
-           'average_dodgeSkillShotsSmallWindow-Blue_player1', 'average_dodgeSkillShotsSmallWindow-Blue_player2', 'average_dodgeSkillShotsSmallWindow-Blue_player3', 'average_dodgeSkillShotsSmallWindow-Blue_player4', 'average_dodgeSkillShotsSmallWindow-Blue_player5',
-           
-           'average_laneMinionsFirst10Minutes-red_Player1', 'average_laneMinionsFirst10Minutes-red_Player2', 'average_laneMinionsFirst10Minutes-red_Player3', 'average_laneMinionsFirst10Minutes-red_Player4', 'average_laneMinionsFirst10Minutes-red_Player5',
-           'average_laneMinionsFirst10Minutes-Blue_player1', 'average_laneMinionsFirst10Minutes-Blue_player2', 'average_laneMinionsFirst10Minutes-Blue_player3', 'average_laneMinionsFirst10Minutes-Blue_player4', 'average_laneMinionsFirst10Minutes-Blue_player5',
-           
-           'average_soloKills-red_Player1', 'average_soloKills-red_Player2', 'average_soloKills-red_Player3', 'average_soloKills-red_Player4', 'average_soloKills-red_Player5',
-           'average_soloKills-Blue_player1', 'average_soloKills-Blue_player2', 'average_soloKills-Blue_player3', 'average_soloKills-Blue_player4', 'average_soloKills-Blue_player5',
-           
-           'average_danceWithRiftHerald-red_Player1', 'average_danceWithRiftHerald-red_Player2', 'average_danceWithRiftHerald-red_Player3', 'average_danceWithRiftHerald-red_Player4', 'average_danceWithRiftHerald-red_Player5',
-           'average_danceWithRiftHerald-Blue_player1', 'average_danceWithRiftHerald-Blue_player2', 'average_danceWithRiftHerald-Blue_player3', 'average_danceWithRiftHerald-Blue_player4', 'average_danceWithRiftHerald-Blue_player5',
+           'average_damagePerMinute-Blue_player2',
+           'average_dodgeSkillShotsSmallWindow-Blue_player2', 
+           'average_laneMinionsFirst10Minutes-Blue_player2',
+           'average_soloKills-Blue_player2', 
+           'average_danceWithRiftHerald-Blue_player2', 
+           'average_kills-Blue_player3', 
+           'average_deaths-Blue_player3', 
+           'average_assists-Blue_player3', 
+           'average_visionScore-Blue_player3',
+           'average_wardsKilled-Blue_player3', 
+           'average_goldPerMinute-Blue_player3', 
+           'average_landSkillShotsEarlyGame-Blue_player3', 
+           'average_skillshotsHit-Blue_player3', 
+           'average_skillshotsDodged-Blue_player3',
+           'average_turretTakedowns-Blue_player3', 
+           'average_goldEarned-Blue_player3', 
+          
+           'average_damagePerMinute-Blue_player3', 
+           'average_dodgeSkillShotsSmallWindow-Blue_player3', 
+           'average_laneMinionsFirst10Minutes-Blue_player3', 
+           'average_soloKills-Blue_player3', 
+           'average_danceWithRiftHerald-Blue_player3', 
+           'average_kills-Blue_player4',
+           'average_deaths-Blue_player4', 
+           'average_assists-Blue_player4', 
+           'average_visionScore-Blue_player4',
+           'average_wardsKilled-Blue_player4',
+           'average_goldPerMinute-Blue_player4'
+           , 'average_landSkillShotsEarlyGame-Blue_player4', 
+           'average_skillshotsHit-Blue_player4',
+           'average_skillshotsDodged-Blue_player4', 
+           'average_turretTakedowns-Blue_player4',
+           'average_goldEarned-Blue_player4',  
+           'average_damagePerMinute-Blue_player4', 
+           'average_dodgeSkillShotsSmallWindow-Blue_player4', 
+           'average_laneMinionsFirst10Minutes-Blue_player4',
+           'average_soloKills-Blue_player4', 
+           'average_danceWithRiftHerald-Blue_player4',
+           'average_kills-Blue_player5', 
+           'average_deaths-Blue_player5', 
+           'average_assists-Blue_player5', 
+           'average_visionScore-Blue_player5', 
+           'average_wardsKilled-Blue_player5', 
+           'average_goldPerMinute-Blue_player5', 
+           'average_landSkillShotsEarlyGame-Blue_player5', 
+           'average_skillshotsHit-Blue_player5', 
+           'average_skillshotsDodged-Blue_player5', 
+           'average_turretTakedowns-Blue_player5', 
+           'average_goldEarned-Blue_player5', 
+           'average_damagePerMinute-Blue_player5', 
+           'average_dodgeSkillShotsSmallWindow-Blue_player5', 
+           'average_laneMinionsFirst10Minutes-Blue_player5', 
+           'average_soloKills-Blue_player5', 
+           'average_danceWithRiftHerald-Blue_player5', 
            'blueTeam_win']
+
 
 # Define an empty DataFrame with the columns
 df = pd.DataFrame(columns=columns)
-
+match_ids = get_match_ids()
 def run():
     
-    match_ids = get_match_ids()
+    # match_ids = get_match_ids()
     for match in match_ids:
         win = 0
         blueTeam = []
@@ -218,14 +339,13 @@ def run():
                 bl.append(bInfo[i]['deaths'])
                 bl.append(bInfo[i]['assists'])
                 bl.append(bInfo[i]['visionScore'])
-                bl.append(rInfo[i]['wablsKilled'])
+                bl.append(rInfo[i]['wardsKilled'])
                 bl.append(rInfo[i]['goldPerMinute'])
                 bl.append(rInfo[i]['landSkillShotsEarlyGame'])
                 bl.append(rInfo[i]['skillshotsHit'])
                 bl.append(rInfo[i]['skillshotsDodged'])
                 bl.append(rInfo[i]['turretTakedowns'])
                 bl.append(rInfo[i]['goldEarned'])
-                bl.append(rInfo[i]['onMyWayPings'])
                 bl.append(rInfo[i]['damagePerMinute'])
                 bl.append(rInfo[i]['dodgeSkillShotsSmallWindow'])
                 bl.append(rInfo[i]['laneMinionsFirst10Minutes'])
@@ -243,7 +363,6 @@ def run():
                 rd.append(rInfo[i]['skillshotsDodged'])
                 rd.append(rInfo[i]['turretTakedowns'])
                 rd.append(rInfo[i]['goldEarned'])
-                rd.append(rInfo[i]['onMyWayPings'])
                 rd.append(rInfo[i]['damagePerMinute'])
                 rd.append(rInfo[i]['dodgeSkillShotsSmallWindow'])
                 rd.append(rInfo[i]['laneMinionsFirst10Minutes'])
@@ -280,7 +399,6 @@ def get_participants_info(participants):
             skillshotsDodged = []
             turretTakedowns = []
             goldEarned = []
-            onMyWayPings = []
             damagePerMinute = []
             dodgeSkillShotsSmallWindow = []
             laneMinionsFirst10Minutes = []
@@ -297,13 +415,13 @@ def get_participants_info(participants):
                             assists.append(participant_identity['assists'])
                             visionScore.append(participant_identity['visionScore'])
                             wardsKilled.append(participant_identity['wardsKilled'])
+                            # if 'challenges' in participant_identity:
                             goldPerMinute.append(participant_identity['challenges']['goldPerMinute'])
                             landSkillShotsEarlyGame.append(participant_identity['challenges']['landSkillShotsEarlyGame'])
                             skillshotsHit.append(participant_identity['challenges']['skillshotsHit'])
                             skillshotsDodged.append(participant_identity['challenges']['skillshotsDodged'])
                             turretTakedowns.append(participant_identity['challenges']['turretTakedowns'])
                             goldEarned.append(participant_identity['goldEarned'])
-                            onMyWayPings.append(participant_identity['onMyWayPings'])
                             damagePerMinute.append(participant_identity['challenges']['damagePerMinute'])
                             dodgeSkillShotsSmallWindow.append(participant_identity['challenges']['dodgeSkillShotsSmallWindow'])
                             laneMinionsFirst10Minutes.append(participant_identity['challenges']['laneMinionsFirst10Minutes'])
@@ -323,7 +441,6 @@ def get_participants_info(participants):
                          'skillshotsDodged':average(skillshotsDodged),
                          'turretTakedowns':average(turretTakedowns),
                          'goldEarned':average(goldEarned),
-                         'onMyWayPings':average(onMyWayPings),
                          'damagePerMinute':average(damagePerMinute),
                          'dodgeSkillShotsSmallWindow':average(dodgeSkillShotsSmallWindow),
                          'laneMinionsFirst10Minutes':average(laneMinionsFirst10Minutes),
