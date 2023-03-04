@@ -27,8 +27,8 @@ import numpy as np
 # Replace YOUR_API_KEY with your actual API key
 API_KEY = "RGAPI-71d4dbf9-401b-4ade-9a41-559a3f86662c"
 lol_watcher = LolWatcher(API_KEY)
-TIERS = ["GOLD"]
-RANKS = ["I"]
+TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
+RANKS = ["I", "II", "III", "IV"]
 REGIONS = ["eun1"]
 PAGES = [1]
 
@@ -300,10 +300,10 @@ columns = ['match_id',
 
 
 # Define an empty DataFrame with the columns
-df = pd.DataFrame(columns=columns)
-# match_ids = get_match_ids()
-with open('match_ids.pickle', 'rb') as f:
-    match_ids = pickle.load(f)
+# df = pd.DataFrame(columns=columns)
+match_ids = get_match_ids()
+# with open('match_ids.pickle', 'rb') as f:
+#     match_ids = pickle.load(f)
 def run():
     
     # match_ids = get_match_ids()
