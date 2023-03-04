@@ -11,7 +11,7 @@ import time
 import pickle
 import pandas as pd
 import concurrent.futures
-    
+import numpy as np
 # watcher = LolWatcher('RGAPI-af2143e1-3872-472e-8e1b-859f6011d83c')
 
 # my_region = 'eun1'
@@ -25,7 +25,7 @@ import concurrent.futures
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-77c4e3b0-2c24-4697-8d57-5b9543ce6a1c"
+API_KEY = "RGAPI-71d4dbf9-401b-4ade-9a41-559a3f86662c"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["GOLD"]
 RANKS = ["I"]
@@ -312,6 +312,7 @@ def run():
         blueTeam = []
         redTeam = []
         try:
+            time.sleep(5)
             match_details = lol_watcher.match.by_id(region=REGIONS[0],  match_id=match)
             participants = match_details['metadata']['participants']
             for participant in participants:
@@ -341,18 +342,18 @@ def run():
                 bl.append(bInfo[i]['deaths'])
                 bl.append(bInfo[i]['assists'])
                 bl.append(bInfo[i]['visionScore'])
-                bl.append(rInfo[i]['wardsKilled'])
-                bl.append(rInfo[i]['goldPerMinute'])
-                bl.append(rInfo[i]['landSkillShotsEarlyGame'])
-                bl.append(rInfo[i]['skillshotsHit'])
-                bl.append(rInfo[i]['skillshotsDodged'])
-                bl.append(rInfo[i]['turretTakedowns'])
-                bl.append(rInfo[i]['goldEarned'])
-                bl.append(rInfo[i]['damagePerMinute'])
-                bl.append(rInfo[i]['dodgeSkillShotsSmallWindow'])
-                bl.append(rInfo[i]['laneMinionsFirst10Minutes'])
-                bl.append(rInfo[i]['soloKills'])
-                bl.append(rInfo[i]['dancedWithRiftHerald'])
+                bl.append(bInfo[i]['wardsKilled'])
+                bl.append(bInfo[i]['goldPerMinute'])
+                bl.append(bInfo[i]['landSkillShotsEarlyGame'])
+                bl.append(bInfo[i]['skillshotsHit'])
+                bl.append(bInfo[i]['skillshotsDodged'])
+                bl.append(bInfo[i]['turretTakedowns'])
+                bl.append(bInfo[i]['goldEarned'])
+                bl.append(bInfo[i]['damagePerMinute'])
+                bl.append(bInfo[i]['dodgeSkillShotsSmallWindow'])
+                bl.append(bInfo[i]['laneMinionsFirst10Minutes'])
+                bl.append(bInfo[i]['soloKills'])
+                bl.append(bInfo[i]['dancedWithRiftHerald'])
                 
                 rd.append(rInfo[i]['kills'])
                 rd.append(rInfo[i]['deaths'])
@@ -387,8 +388,9 @@ def get_participants_info(participants):
     result = {}
     i = 0
     for participant in participants:
-        time.sleep(2)
+        print(participant)
         try:
+            time.sleep(5)
             match_history = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=participant, count=5, queue=420)
             kills = []
             deaths = []
@@ -407,28 +409,34 @@ def get_participants_info(participants):
             soloKills = []
             dancedWithRiftHerald = []
             for match_id in match_history:
-                time.sleep(2)
+                # goldPerMinute.append(participant_identity['challenges'].get('goldPerMinute', 0))
                 try:
+                    time.sleep(5)
                     match_details = lol_watcher.match.by_id(region=REGIONS[0],  match_id=match_id)
-                    for participant_identity in match_details['info']['participants']:
-                        if participant_identity['puuid'] == participant:
-                            kills.append(participant_identity['kills'])
-                            deaths.append(participant_identity['deaths'])
-                            assists.append(participant_identity['assists'])
-                            visionScore.append(participant_identity['visionScore'])
-                            wardsKilled.append(participant_identity['wardsKilled'])
-                            # if 'challenges' in participant_identity:
-                            goldPerMinute.append(participant_identity['challenges']['goldPerMinute'])
-                            landSkillShotsEarlyGame.append(participant_identity['challenges']['landSkillShotsEarlyGame'])
-                            skillshotsHit.append(participant_identity['challenges']['skillshotsHit'])
-                            skillshotsDodged.append(participant_identity['challenges']['skillshotsDodged'])
-                            turretTakedowns.append(participant_identity['challenges']['turretTakedowns'])
-                            goldEarned.append(participant_identity['goldEarned'])
-                            damagePerMinute.append(participant_identity['challenges']['damagePerMinute'])
-                            dodgeSkillShotsSmallWindow.append(participant_identity['challenges']['dodgeSkillShotsSmallWindow'])
-                            laneMinionsFirst10Minutes.append(participant_identity['challenges']['laneMinionsFirst10Minutes'])
-                            soloKills.append(participant_identity['challenges']['soloKills'])
-                            dancedWithRiftHerald.append(participant_identity['challenges']['dancedWithRiftHerald'])
+                    # i=0
+                    # for participant_identity in match_details['metadata']['participants']:
+                    for j in range(0,10):
+                        if match_details['info']['participants'][j]['puuid'] == participant:
+                            player = match_details['info']['participants'][j]
+                            
+                            kills.append(player['kills'])
+                            deaths.append(player['deaths'])
+                            assists.append(player['assists'])
+                            visionScore.append(player['visionScore'])
+                            wardsKilled.append(player['wardsKilled'])
+                            # if 'challenges' in player:
+                            goldPerMinute.append(player['challenges'].get('goldPerMinute', np.nan))
+                            landSkillShotsEarlyGame.append(player['challenges'].get('landSkillShotsEarlyGame', np.nan))
+                            skillshotsHit.append(player['challenges'].get('skillshotsHit', np.nan))
+                            skillshotsDodged.append(player['challenges'].get('skillshotsDodged', np.nan))
+                            turretTakedowns.append(player['challenges'].get('turretTakedowns', np.nan))
+                            goldEarned.append(player['goldEarned'])
+                            damagePerMinute.append(player['challenges'].get('damagePerMinute', np.nan))
+                            dodgeSkillShotsSmallWindow.append(player['challenges'].get('dodgeSkillShotsSmallWindow', np.nan))
+                            laneMinionsFirst10Minutes.append(player['challenges'].get('laneMinionsFirst10Minutes', np.nan))
+                            soloKills.append(player['challenges'].get('soloKills', np.nan))
+                            dancedWithRiftHerald.append(player['challenges'].get('dancedWithRiftHerald', np.nan))
+                        
                 except ApiError as err:
                     print(f"API error: {err}")
                     time.sleep(130)
