@@ -25,7 +25,7 @@ import numpy as np
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-71d4dbf9-401b-4ade-9a41-559a3f86662c"
+API_KEY = "RGAPI-0ffa2cd7-811a-48fc-99f1-72cfb7da9149"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
 RANKS = ["I", "II", "III", "IV"]
@@ -51,7 +51,7 @@ def get_players():
                     try:
                         random_players_response = requests.get(random_players_url)
                         random_players = random_players_response.json()
-                        result.append(random_players)
+                        result.append(random_players[:50])
                     except requests.exceptions.RequestException as e:
                         print(f"Error: {e}. Retrying in 5 seconds...")
                         time.sleep(5)
@@ -62,9 +62,10 @@ def get_players():
 
 
 def get_puuids():
-    print("geting the puuids")
+    
     players = get_players()
     players  = [val for sublist in players for val in sublist]
+    print("getting puuids")
     # with open('players.pickle', 'rb') as f:
         # players = pickle.load(f)
     puuids = []
@@ -96,6 +97,7 @@ def get_puuids():
             
 
 def get_match_ids():
+    print("getting much ids")
     puuids = get_puuids()
     # with open('puuids.pickle', 'wb') as f:
     #     pickle.dump(puuids, f)
@@ -112,7 +114,7 @@ def get_match_ids():
         # match_ids = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={number_of_matches}&api_key={API_KEY}"
          #420 means its the ranked solo duo
         try:
-            match_ids = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=puuid, queue=420)
+            match_ids = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=puuid, count=10, queue=420)
             matches.append(match_ids)
             time.sleep(2)
         except ApiError as err:
@@ -300,10 +302,10 @@ columns = ['match_id',
 
 
 # Define an empty DataFrame with the columns
-# df = pd.DataFrame(columns=columns)
-match_ids = get_match_ids()
-# with open('match_ids.pickle', 'rb') as f:
-#     match_ids = pickle.load(f)
+df = pd.DataFrame(columns=columns)
+# match_ids = get_match_ids()
+with open('match_ids.pickle', 'rb') as f:
+    match_ids = pickle.load(f)
 def run():
     
     # match_ids = get_match_ids()
@@ -373,7 +375,7 @@ def run():
                 rd.append(rInfo[i]['dancedWithRiftHerald'])
             row = [match] + rd + bl + [win]
             df.loc[len(df)] = row
-            print(row)
+            print(df)
         except ApiError as err:
             # Handle any errors that occur
             print(f"API error: {err}")
@@ -388,7 +390,7 @@ def get_participants_info(participants):
     result = {}
     i = 0
     for participant in participants:
-        print(participant)
+        # print(participant)
         try:
             time.sleep(5)
             match_history = lol_watcher.match.matchlist_by_puuid(region=REGIONS[0], puuid=participant, count=5, queue=420)
