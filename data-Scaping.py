@@ -25,7 +25,7 @@ import numpy as np
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-0ffa2cd7-811a-48fc-99f1-72cfb7da9149"
+API_KEY = "RGAPI-ee2671b4-3005-4b79-a8a4-173f23916275"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
 RANKS = ["I", "II", "III", "IV"]
