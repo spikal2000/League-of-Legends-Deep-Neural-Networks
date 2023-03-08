@@ -306,6 +306,7 @@ df = pd.DataFrame(columns=columns)
 # match_ids = get_match_ids()
 with open('match_ids.pickle', 'rb') as f:
     match_ids = pickle.load(f)
+# match_ids = match_ids[94:96]
 def run():
     
     # match_ids = get_match_ids()
@@ -331,6 +332,8 @@ def run():
             
             bInfo = bInfo_future.result()
             rInfo = rInfo_future.result()
+            if bInfo is False or rInfo is False:
+                continue
             # bInfo = get_participants_info(blueTeam)
             # rInfo = get_participants_info(redTeam)
             #teamID = 100 == blueteam
@@ -426,7 +429,9 @@ def get_participants_info(participants):
                             assists.append(player['assists'])
                             visionScore.append(player['visionScore'])
                             wardsKilled.append(player['wardsKilled'])
-                            # if 'challenges' in player:
+                            if 'challenges' not in player:
+                                return False
+                                break
                             goldPerMinute.append(player['challenges'].get('goldPerMinute', np.nan))
                             landSkillShotsEarlyGame.append(player['challenges'].get('landSkillShotsEarlyGame', np.nan))
                             skillshotsHit.append(player['challenges'].get('skillshotsHit', np.nan))
