@@ -9,7 +9,7 @@ import numpy as np
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-c790dfab-58d6-4785-868d-85aa454a226b"
+API_KEY = "RGAPI-aeaf7b10-e011-4b39-a07c-e6244a7aaa19"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
 RANKS = ["I", "II", "III", "IV"]
@@ -110,26 +110,28 @@ columns = ['match_id',
            'inactive_r3',
            'freshBlood_r3',
            'hotStreak_r3',
-           'summonerLevel_r3',
-           'tier_r3',
-           'rank_r3',
-           'leaguePoints_r3',
-           'wins_r3',
-           'losses_r3',
-           'veteran_r3',
-           'inactive_r3',
-           'freshBlood_r3',
-           'hotStreak_r3',
-           'summonerLevel_r3',
-           'tier_r3',
-           'rank_r3',
-           'leaguePoints_r3',
-           'wins_r3',
-           'losses_r3',
-           'veteran_r3',
-           'inactive_r3',
-           'freshBlood_r3',
-           'hotStreak_r3',
+           
+           'summonerLevel_r4',
+           'tier_r4',
+           'rank_r4',
+           'leaguePoints_r4',
+           'wins_r4',
+           'losses_r4',
+           'veteran_r4',
+           'inactive_r4',
+           'freshBlood_r4',
+           'hotStreak_r4',
+           
+           'summonerLevel_r5',
+           'tier_r5',
+           'rank_r5',
+           'leaguePoints_r5',
+           'wins_r5',
+           'losses_r5',
+           'veteran_r5',
+           'inactive_r5',
+           'freshBlood_r5',
+           'hotStreak_r5',
            
            'blueTeam_win']
 
@@ -139,7 +141,7 @@ df = pd.DataFrame(columns=columns)
 # match_ids = get_match_ids()
 with open('match_ids.pickle', 'rb') as f:
     match_ids = pickle.load(f)
-# match_ids = match_ids[94:100]
+match_ids = match_ids[5000:]
 def run():
     
     # match_ids = get_match_ids()
