@@ -316,6 +316,7 @@ columns = ['match_id',
            'blueTeam_win']
 
 
+
 # Define an empty DataFrame with the columns
 df = pd.DataFrame(columns=columns)
 # match_ids = get_match_ids()
