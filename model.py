@@ -52,6 +52,7 @@ print('Test accuracy:', test_acc)
 new_data = pd.read_csv('data_file_1.csv')
 X_new = scaler.transform(new_data.iloc[0:1, 2:161])
 # y_new = new_data['blueTeam_win']
+
 predictions = model.predict(X_new)
 # test_loss, test_acc = model.evaluate(X_new, y_new)
 # print('Test accuracy:', test_acc)
