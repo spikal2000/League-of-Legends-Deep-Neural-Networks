@@ -26,7 +26,7 @@ import asyncio
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-92b3ae0f-4e6a-43d5-9375-03e230f14b9f"
+API_KEY = "RGAPI-087374e4-8a5b-435f-b806-8b98d0fd4e41"
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
 RANKS = ["I", "II", "III", "IV"]
@@ -300,17 +300,17 @@ columns = ['match_id',
            'average_soloKills-Blue_player5', 
            'average_danceWithRiftHerald-Blue_player5', 
            
-           'tier-Red_player1',
-           'tier-Red_player2',
-           'tier-Red_player3',
-           'tier-Red_player4',
-           'tier-Red_player5',
+           # 'tier-Red_player1',
+           # 'tier-Red_player2',
+           # 'tier-Red_player3',
+           # 'tier-Red_player4',
+           # 'tier-Red_player5',
            
-           'tier-Blue_player1',
-           'tier-Blue_player2',
-           'tier-Blue_player3',
-           'tier-Blue_player4',
-           'tier-Blue_player5',
+           # 'tier-Blue_player1',
+           # 'tier-Blue_player2',
+           # 'tier-Blue_player3',
+           # 'tier-Blue_player4',
+           # 'tier-Blue_player5',
            
            
            'blueTeam_win']
@@ -322,19 +322,19 @@ df = pd.DataFrame(columns=columns)
 # match_ids = get_match_ids()
 with open('match_ids.pickle', 'rb') as f:
     match_ids = pickle.load(f)
-match_ids = match_ids[90:105]
+# match_ids = match_ids[494:4500]
 
-def get_rank(participant):
-    summoner_obj = lol_watcher.summoner.by_puuid(REGIONS[0], participant)
-    ranked_stats = lol_watcher.league.by_summoner(REGIONS[0], summoner_obj['id'])
-    if len(ranked_stats) == 1:
-        j = 0
-    elif len(ranked_stats) == 2:
-        j = 1
-    else:
-        print("noinfo")
-        return np.nan
-    return ranked_stats[j]['tier']
+# def get_rank(participant):
+#     summoner_obj = lol_watcher.summoner.by_puuid(REGIONS[0], participant)
+#     ranked_stats = lol_watcher.league.by_summoner(REGIONS[0], summoner_obj['id'])
+#     if len(ranked_stats) == 1:
+#         j = 0
+#     elif len(ranked_stats) == 2:
+#         j = 1
+#     else:
+#         print("noinfo")
+#         return np.nan
+#     return ranked_stats[j]['tier']
     
 
 def run():
@@ -344,8 +344,8 @@ def run():
         win = 0
         blueTeam = []
         redTeam = []
-        btiers = []
-        rtiers = []
+        # btiers = []
+        # rtiers = []
         try:
             time.sleep(5)
             match_details = lol_watcher.match.by_id(region=REGIONS[0],  match_id=match)
@@ -355,10 +355,10 @@ def run():
                     if participant == match_details['info']['participants'][i]['puuid']:
                         if match_details['info']['participants'][i]['teamId'] == 100:
                             blueTeam.append(participant)
-                            btiers.append(get_rank(participant))
+                            # btiers.append(get_rank(participant))
                         if match_details['info']['participants'][i]['teamId'] == 200:
                             redTeam.append(participant)
-                            rtiers.append(get_rank(participant))
+                            # rtiers.append(get_rank(participant))
             #start here
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 bInfo_future = executor.submit(get_participants_info, blueTeam)
@@ -411,8 +411,8 @@ def run():
                 rd.append(rInfo[i]['laneMinionsFirst10Minutes'])
                 rd.append(rInfo[i]['soloKills'])
                 rd.append(rInfo[i]['dancedWithRiftHerald'])
-            # row = [match] + rd + bl + [win]
-            row = [match] + rd + bl + rtiers + btiers +  [win]
+            row = [match] + rd + bl + [win]
+            # row = [match] + rd + bl + rtiers + btiers +  [win]
             df.loc[len(df)] = row
             print(df)
         except ApiError as err:
