@@ -6,10 +6,11 @@ import pickle
 import pandas as pd
 import concurrent.futures
 import numpy as np
+import os
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-aeaf7b10-e011-4b39-a07c-e6244a7aaa19"
+API_KEY = ""
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
 RANKS = ["I", "II", "III", "IV"]

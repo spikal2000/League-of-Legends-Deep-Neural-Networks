@@ -26,7 +26,7 @@ import asyncio
 
 
 # Replace YOUR_API_KEY with your actual API key
-API_KEY = "RGAPI-087374e4-8a5b-435f-b806-8b98d0fd4e41"
+API_KEY = ""
 lol_watcher = LolWatcher(API_KEY)
 TIERS = ["IRON", "SILVER", "GOLD", "PLATINUM", "DIAMOND"]
 RANKS = ["I", "II", "III", "IV"]
